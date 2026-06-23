@@ -1,0 +1,11 @@
+{
+  "teamName": "My Team",
+  "pokemon": [
+    { "pokemonId": 1, "nickname": "A", "moveset": [], "heldItem": "" },
+    { "pokemonId": 2, "nickname": "B", "moveset": [], "heldItem": "" },
+    { "pokemonId": 3, "nickname": "C", "moveset": [], "heldItem": "" },
+    { "pokemonId": 4, "nickname": "D", "moveset": [], "heldItem": "" },
+    { "pokemonId": 5, "nickname": "E", "moveset": [], "heldItem": "" },
+    { "pokemonId": 6, "nickname": "F", "moveset": [], "heldItem": "" }
+  ]
+}

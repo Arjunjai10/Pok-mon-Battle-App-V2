@@ -1,0 +1,22 @@
+[
+  { "id": 1, "name": "Leftovers", "effect": "Restores 1/16 max HP at the end of each turn.", "trigger": "end-of-turn" },
+  { "id": 2, "name": "King's Rock", "effect": "Has a 10% chance to cause the target to flinch when dealing damage.", "trigger": "on-hit" },
+  { "id": 3, "name": "Scope Lens", "effect": "Increases the critical hit ratio by 1 stage.", "trigger": "passive" },
+  { "id": 4, "name": "Miracle Seed", "effect": "Boosts the power of Grass-type moves by 10%.", "trigger": "passive" },
+  { "id": 5, "name": "Charcoal", "effect": "Boosts the power of Fire-type moves by 10%.", "trigger": "passive" },
+  { "id": 6, "name": "Mystic Water", "effect": "Boosts the power of Water-type moves by 10%.", "trigger": "passive" },
+  { "id": 7, "name": "Magnet", "effect": "Boosts the power of Electric-type moves by 10%.", "trigger": "passive" },
+  { "id": 8, "name": "Sharp Beak", "effect": "Boosts the power of Flying-type moves by 10%.", "trigger": "passive" },
+  { "id": 9, "name": "Poison Barb", "effect": "Boosts the power of Poison-type moves by 10%.", "trigger": "passive" },
+  { "id": 10, "name": "Soft Sand", "effect": "Boosts the power of Ground-type moves by 10%.", "trigger": "passive" },
+  { "id": 11, "name": "Hard Stone", "effect": "Boosts the power of Rock-type moves by 10%.", "trigger": "passive" },
+  { "id": 12, "name": "Silver Powder", "effect": "Boosts the power of Bug-type moves by 10%.", "trigger": "passive" },
+  { "id": 13, "name": "Spell Tag", "effect": "Boosts the power of Ghost-type moves by 10%.", "trigger": "passive" },
+  { "id": 14, "name": "Twisted Spoon", "effect": "Boosts the power of Psychic-type moves by 10%.", "trigger": "passive" },
+  { "id": 15, "name": "NeverMeltIce", "effect": "Boosts the power of Ice-type moves by 10%.", "trigger": "passive" },
+  { "id": 16, "name": "Dragon Scale", "effect": "Boosts the power of Dragon-type moves by 10%.", "trigger": "passive" },
+  { "id": 17, "name": "Black Belt", "effect": "Boosts the power of Fighting-type moves by 10%.", "trigger": "passive" },
+  { "id": 18, "name": "Pink Bow", "effect": "Boosts the power of Normal-type moves by 10%.", "trigger": "passive" },
+  { "id": 19, "name": "Polkadot Bow", "effect": "Boosts the power of Normal-type moves by 10%.", "trigger": "passive" },
+  { "id": 20, "name": "Metal Coat", "effect": "Boosts the power of Steel-type moves by 10%.", "trigger": "passive" }
+]
