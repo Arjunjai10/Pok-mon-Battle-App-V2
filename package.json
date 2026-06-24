@@ -11,7 +11,7 @@
     "url": "git+https://github.com/Arjunjai10/Pok-mon-Battle-App-V2.git"
   },
   "engines": {
-    "node": ">=20.0.0"
+    "node": ">=20.19.0"
   },
   "keywords": [],
   "author": "",
