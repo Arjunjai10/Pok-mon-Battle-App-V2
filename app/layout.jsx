@@ -6,6 +6,17 @@ import PageTransition from '../components/PageTransition';
 const inter = Inter({ subsets: ['latin'], variable: '--font-inter' });
 const geist = Geist({ subsets: ['latin'], variable: '--font-geist' });
 
+export const metadata = {
+  title: 'Pokémon Battle App',
+  description: 'Battle with your favorite Pokémon online!',
+};
+
+export const viewport = {
+  width: 'device-width',
+  initialScale: 1,
+  maximumScale: 1,
+};
+
 export default function RootLayout({ children }) {
   return (
     <html lang="en" className={`${inter.variable} ${geist.variable}`}>

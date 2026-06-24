@@ -2,6 +2,7 @@
 import { useEffect, useState } from 'react';
 import { getSocket } from '../../lib/socket';
 import { motion, AnimatePresence, useReducedMotion } from 'framer-motion';
+import styles from './Lobby.module.css';
 
 const RoomCodeDisplay = ({ roomId }) => {
   const [copied, setCopied] = useState(false);
@@ -12,10 +13,22 @@ const RoomCodeDisplay = ({ roomId }) => {
   };
   const shouldReduceMotion = useReducedMotion();
   return (
-    <div style={{ position: 'relative', display: 'inline-block', margin: '15px 0' }}>
+    <div style={{ position: 'relative', display: 'flex', justifyContent: 'center', margin: '15px 0', width: '100%' }}>
       <div 
         onClick={handleCopy} 
-        style={{ fontFamily: 'monospace', fontSize: 32, cursor: 'pointer', background: 'var(--surface-2)', padding: '10px 20px', borderRadius: 8, letterSpacing: '4px', textAlign: 'center', fontWeight: 'bold' }}
+        style={{ 
+          fontFamily: 'monospace', 
+          fontSize: 'clamp(16px, 4vw, 32px)', 
+          cursor: 'pointer', 
+          background: 'var(--surface-2)', 
+          padding: '10px 20px', 
+          borderRadius: 8, 
+          letterSpacing: 'clamp(1px, 1vw, 4px)', 
+          textAlign: 'center', 
+          fontWeight: 'bold',
+          wordBreak: 'break-all',
+          maxWidth: '100%'
+        }}
       >
         {roomId}
       </div>
@@ -155,14 +168,14 @@ export default function Lobby() {
   if (!user) return <div style={{ padding: 40, textAlign: 'center' }}>Loading...</div>;
 
   return (
-    <div style={{ maxWidth: 800, margin: '0 auto', padding: 40 }}>
+    <div className={styles.container}>
       <h1 style={{ fontSize: 32, marginBottom: 10 }}>Lobby</h1>
       <p style={{ color: 'var(--text-secondary)', marginBottom: 40 }}>Welcome, <strong>{user.userID}</strong></p>
       
       {!team && <p style={{ color: 'var(--hp-low)', padding: 15, background: 'var(--surface-1)', borderRadius: 8, marginBottom: 20 }}>You must build a team before battling!</p>}
 
-      <div style={{ display: 'flex', gap: 40 }}>
-        <div style={{ flex: 1, background: 'var(--surface-1)', padding: 30, borderRadius: 16, border: '1px solid var(--surface-2)' }}>
+      <div className={styles.flexLayout}>
+        <div className={styles.panel}>
           <h2 style={{ marginTop: 0 }}>Play</h2>
           
           <div style={{ display: 'flex', flexDirection: 'column', gap: 15, marginTop: 20 }}>
@@ -200,7 +213,7 @@ export default function Lobby() {
           </div>
         </div>
 
-        <div style={{ flex: 1, background: 'var(--surface-1)', padding: 30, borderRadius: 16, border: '1px solid var(--surface-2)' }}>
+        <div className={styles.panel}>
           <h2 style={{ marginTop: 0 }}>Friends Online</h2>
           {friends.length === 0 ? (
             <p style={{ color: 'var(--text-secondary)' }}>No friends added yet.</p>
@@ -245,13 +258,13 @@ export default function Lobby() {
           >
             <div style={{ position: 'absolute', top: 40, color: 'var(--text-secondary)', fontSize: 14 }}>Tap anywhere to skip</div>
             
-            <div style={{ display: 'flex', alignItems: 'center', gap: 50 }}>
+            <div className={styles.vsImages}>
               <motion.img 
                 initial={{ x: shouldReduceMotion ? 0 : '-100vw', opacity: 0 }}
                 animate={{ x: 0, opacity: 1 }}
                 transition={shouldReduceMotion ? { duration: 0 } : { type: 'spring', damping: 15, delay: 0.1 }}
                 src={`https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/back/${vsData.myLead}.png`} 
-                style={{ width: 300, filter: 'drop-shadow(0 0 20px var(--accent-purple))', imageRendering: 'pixelated' }}
+                className={styles.vsImage}
                 alt="Player Lead"
               />
               
@@ -259,7 +272,7 @@ export default function Lobby() {
                 initial={{ scale: shouldReduceMotion ? 1 : 0, opacity: 0 }}
                 animate={{ scale: 1, opacity: 1 }}
                 transition={shouldReduceMotion ? { duration: 0 } : { type: 'spring', damping: 10, delay: 0.3 }}
-                style={{ fontSize: 80, fontStyle: 'italic', margin: 0, color: '#fff', textShadow: '0 0 20px var(--accent-purple)' }}
+                className={styles.vsText}
               >
                 VS
               </motion.h1>
@@ -269,7 +282,7 @@ export default function Lobby() {
                 animate={{ x: 0, opacity: 1 }}
                 transition={shouldReduceMotion ? { duration: 0 } : { type: 'spring', damping: 15, delay: 0.1 }}
                 src={`https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${vsData.oppLead}.png`} 
-                style={{ width: 300, filter: 'drop-shadow(0 0 20px var(--accent-purple))', imageRendering: 'pixelated' }}
+                className={styles.vsImage}
                 alt="Opponent Lead"
               />
             </div>

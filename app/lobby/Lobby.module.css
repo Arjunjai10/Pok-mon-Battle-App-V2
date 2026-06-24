@@ -1,0 +1,58 @@
+.container {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 40px;
+}
+
+.flexLayout {
+  display: flex;
+  gap: 40px;
+}
+
+.panel {
+  flex: 1;
+  background: var(--surface-1);
+  padding: 30px;
+  border-radius: 16px;
+  border: 1px solid var(--surface-2);
+}
+
+.vsImages {
+  display: flex;
+  align-items: center;
+  gap: 50px;
+}
+
+.vsImage {
+  width: 300px;
+  filter: drop-shadow(0 0 20px var(--accent-purple));
+  image-rendering: pixelated;
+}
+
+.vsText {
+  font-size: 80px;
+  font-style: italic;
+  margin: 0;
+  color: #fff;
+  text-shadow: 0 0 20px var(--accent-purple);
+}
+
+@media (max-width: 768px) {
+  .container {
+    padding: 20px;
+  }
+  .flexLayout {
+    flex-direction: column;
+    gap: 20px;
+  }
+  .vsImages {
+    flex-direction: column;
+    gap: 20px;
+  }
+  .vsImage {
+    width: 150px;
+  }
+  .vsText {
+    font-size: 40px;
+  }
+}

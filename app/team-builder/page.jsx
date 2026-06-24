@@ -149,8 +149,8 @@ export default function TeamBuilder() {
               </div>
             </div>
 
-            <div style={{ display: 'flex', gap: 20 }}>
-              <div style={{ flex: 1 }}>
+            <div style={{ display: 'flex', flexWrap: 'wrap', gap: 20 }}>
+              <div style={{ flex: '1 1 150px' }}>
                 <label>Nickname</label>
                 <input 
                   type="text" 
@@ -159,7 +159,7 @@ export default function TeamBuilder() {
                   style={{ width: '100%', padding: 10, background: 'var(--surface-2)', border: 'none', color: 'white', borderRadius: 8, marginTop: 5 }}
                 />
               </div>
-              <div style={{ flex: 1 }}>
+              <div style={{ flex: '1 1 150px' }}>
                 <label>Held Item</label>
                 <select 
                   value={currentSlotData.heldItem} 

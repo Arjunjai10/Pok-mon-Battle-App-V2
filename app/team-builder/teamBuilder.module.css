@@ -344,6 +344,8 @@
   display: flex;
   flex-direction: column;
   gap: 8px;
+  overflow-x: auto;
+  padding-bottom: 5px;
 }
 
 .moveItem {
