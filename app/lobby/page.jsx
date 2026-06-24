@@ -1,7 +1,7 @@
 'use client';
 import { useEffect, useState } from 'react';
 import { getSocket } from '../../lib/socket';
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion, AnimatePresence, useReducedMotion } from 'framer-motion';
 
 const RoomCodeDisplay = ({ roomId }) => {
   const [copied, setCopied] = useState(false);
@@ -10,6 +10,7 @@ const RoomCodeDisplay = ({ roomId }) => {
     setCopied(true);
     setTimeout(() => setCopied(false), 1500);
   };
+  const shouldReduceMotion = useReducedMotion();
   return (
     <div style={{ position: 'relative', display: 'inline-block', margin: '15px 0' }}>
       <div 
@@ -21,9 +22,10 @@ const RoomCodeDisplay = ({ roomId }) => {
       <AnimatePresence>
         {copied && (
           <motion.div 
-            initial={{ opacity: 0, y: 10 }} 
+            initial={{ opacity: 0, y: shouldReduceMotion ? 0 : 10 }} 
             animate={{ opacity: 1, y: 0 }} 
             exit={{ opacity: 0 }} 
+            transition={shouldReduceMotion ? { duration: 0 } : undefined}
             style={{ position: 'absolute', top: -30, left: '50%', transform: 'translateX(-50%)', background: 'var(--accent-purple)', color: '#fff', padding: '4px 8px', borderRadius: 4, fontSize: 12, pointerEvents: 'none', fontWeight: 'bold' }}
           >
             Copied!
@@ -34,21 +36,24 @@ const RoomCodeDisplay = ({ roomId }) => {
   );
 };
 
-const WaitingIndicator = () => (
-  <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 10, marginTop: 20 }}>
-    <span style={{ fontSize: 18, color: 'var(--text-secondary)' }}>Waiting for opponent</span>
-    <div style={{ display: 'flex', gap: 6 }}>
-      {[0, 1, 2].map(i => (
-        <motion.div 
-          key={i} 
-          animate={{ opacity: [0.2, 1, 0.2] }} 
-          transition={{ repeat: Infinity, duration: 1.5, delay: i * 0.2 }} 
-          style={{ width: 8, height: 8, borderRadius: '50%', background: 'var(--accent-purple)' }} 
-        />
-      ))}
+const WaitingIndicator = () => {
+  const shouldReduceMotion = useReducedMotion();
+  return (
+    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 10, marginTop: 20 }}>
+      <span style={{ fontSize: 18, color: 'var(--text-secondary)' }}>Waiting for opponent</span>
+      <div style={{ display: 'flex', gap: 6 }}>
+        {[0, 1, 2].map(i => (
+          <motion.div 
+            key={i} 
+            animate={shouldReduceMotion ? undefined : { opacity: [0.2, 1, 0.2] }} 
+            transition={shouldReduceMotion ? undefined : { repeat: Infinity, duration: 1.5, delay: i * 0.2 }} 
+            style={{ width: 8, height: 8, borderRadius: '50%', background: 'var(--accent-purple)' }} 
+          />
+        ))}
+      </div>
     </div>
-  </div>
-);
+  );
+};
 
 export default function Lobby() {
   const [user, setUser] = useState(null);
@@ -227,46 +232,50 @@ export default function Lobby() {
 
       {/* VS Screen Overlay */}
       <AnimatePresence>
-        {vsData && (
+        {vsData && (() => {
+          const shouldReduceMotion = useReducedMotion();
+          return (
           <motion.div 
             onClick={skipVs}
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
+            transition={shouldReduceMotion ? { duration: 0 } : undefined}
             style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, background: 'var(--bg-dark)', zIndex: 1000, display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer' }}
           >
             <div style={{ position: 'absolute', top: 40, color: 'var(--text-secondary)', fontSize: 14 }}>Tap anywhere to skip</div>
             
             <div style={{ display: 'flex', alignItems: 'center', gap: 50 }}>
               <motion.img 
-                initial={{ x: '-100vw', opacity: 0 }}
+                initial={{ x: shouldReduceMotion ? 0 : '-100vw', opacity: 0 }}
                 animate={{ x: 0, opacity: 1 }}
-                transition={{ type: 'spring', damping: 15, delay: 0.1 }}
+                transition={shouldReduceMotion ? { duration: 0 } : { type: 'spring', damping: 15, delay: 0.1 }}
                 src={`https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/back/${vsData.myLead}.png`} 
                 style={{ width: 300, filter: 'drop-shadow(0 0 20px var(--accent-purple))', imageRendering: 'pixelated' }}
                 alt="Player Lead"
               />
               
               <motion.h1 
-                initial={{ scale: 0, opacity: 0 }}
+                initial={{ scale: shouldReduceMotion ? 1 : 0, opacity: 0 }}
                 animate={{ scale: 1, opacity: 1 }}
-                transition={{ type: 'spring', damping: 10, delay: 0.3 }}
+                transition={shouldReduceMotion ? { duration: 0 } : { type: 'spring', damping: 10, delay: 0.3 }}
                 style={{ fontSize: 80, fontStyle: 'italic', margin: 0, color: '#fff', textShadow: '0 0 20px var(--accent-purple)' }}
               >
                 VS
               </motion.h1>
               
               <motion.img 
-                initial={{ x: '100vw', opacity: 0 }}
+                initial={{ x: shouldReduceMotion ? 0 : '100vw', opacity: 0 }}
                 animate={{ x: 0, opacity: 1 }}
-                transition={{ type: 'spring', damping: 15, delay: 0.1 }}
+                transition={shouldReduceMotion ? { duration: 0 } : { type: 'spring', damping: 15, delay: 0.1 }}
                 src={`https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${vsData.oppLead}.png`} 
                 style={{ width: 300, filter: 'drop-shadow(0 0 20px var(--accent-purple))', imageRendering: 'pixelated' }}
                 alt="Opponent Lead"
               />
             </div>
           </motion.div>
-        )}
+          );
+        })()}
       </AnimatePresence>
     </div>
   );

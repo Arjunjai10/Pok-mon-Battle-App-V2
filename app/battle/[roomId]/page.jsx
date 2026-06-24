@@ -1,19 +1,20 @@
 'use client';
 import React, { useEffect, useState } from 'react';
 import { getSocket } from '../../../lib/socket';
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion, AnimatePresence, useReducedMotion } from 'framer-motion';
 const HpBar = ({ hp, maxHp }) => {
   const percent = Math.max(0, Math.min(100, (hp / maxHp) * 100));
   let colorVar = '--hp-high';
   if (percent <= 50 && percent > 20) colorVar = '--hp-medium';
   if (percent <= 20) colorVar = '--hp-low';
 
+  const shouldReduceMotion = useReducedMotion();
   return (
     <div style={{ width: '100%', height: 8, background: 'var(--surface-2)', borderRadius: 4, overflow: 'hidden', marginTop: 8 }}>
       <motion.div
         initial={{ width: `${percent}%`, backgroundColor: `var(${colorVar})` }}
         animate={{ width: `${percent}%`, backgroundColor: `var(${colorVar})` }}
-        transition={{ duration: 0.6, ease: "easeOut" }}
+        transition={shouldReduceMotion ? { duration: 0 } : { duration: 0.6, ease: "easeOut" }}
         style={{ height: '100%' }}
       />
     </div>
@@ -33,6 +34,8 @@ const PokemonSprite = ({ isP1, active, events }) => {
 
   const statusColors = { burn: '#EE8130', poison: '#A33EA1', paralysis: '#F7D02C', sleep: '#A0A0A0', freeze: '#96D9D6' };
 
+  const shouldReduceMotion = useReducedMotion();
+
   return (
     <div style={{ position: 'relative', width: 160, height: 160, margin: '0 auto' }}>
       <motion.img 
@@ -40,12 +43,12 @@ const PokemonSprite = ({ isP1, active, events }) => {
         initial={{ x: 0, y: 0, opacity: 1 }}
         animate={
           isFainted 
-            ? { x: [0, -10, 10, -10, 10, 0], y: [0, 0, 0, 0, 0, 50], opacity: [1, 1, 1, 1, 1, 0] } 
+            ? shouldReduceMotion ? { opacity: 0 } : { x: [0, -10, 10, -10, 10, 0], y: [0, 0, 0, 0, 0, 50], opacity: [1, 1, 1, 1, 1, 0] } 
             : { x: 0, y: 0, opacity: 1 }
         }
         transition={
           isFainted 
-            ? { duration: 0.4, times: [0, 0.1, 0.2, 0.3, 0.4, 1] } 
+            ? shouldReduceMotion ? { duration: 0 } : { duration: 0.4, times: [0, 0.1, 0.2, 0.3, 0.4, 1] } 
             : { duration: 0 }
         }
         style={{ width: '100%', height: '100%', objectFit: 'contain', imageRendering: 'pixelated' }}
@@ -70,9 +73,9 @@ const PokemonSprite = ({ isP1, active, events }) => {
           <div key={evt.id} style={{ position: 'absolute', top: '20%', left: 0, right: 0, pointerEvents: 'none', zIndex: 10 }}>
             {evt.amount > 0 && (
               <motion.div
-                initial={{ opacity: 0, y: 0, scale: 0.5 }}
-                animate={{ opacity: [0, 1, 1, 0], y: -50, scale: 1 }}
-                transition={{ duration: 1.5, delay: i * 1.2 }}
+                initial={{ opacity: 0, y: 0, scale: shouldReduceMotion ? 1 : 0.5 }}
+                animate={{ opacity: [0, 1, 1, 0], y: shouldReduceMotion ? 0 : -50, scale: 1 }}
+                transition={shouldReduceMotion ? { duration: 0 } : { duration: 1.5, delay: i * 1.2 }}
                 style={{ textAlign: 'center', color: '#fff', textShadow: '0 2px 4px rgba(0,0,0,0.8)', fontWeight: 'bold', fontSize: 24, padding: 4 }}
                 className="hp-number"
               >
@@ -82,9 +85,9 @@ const PokemonSprite = ({ isP1, active, events }) => {
             
             {evt.effectiveness !== 1 && evt.effectiveness > 0 && (
               <motion.div
-                initial={{ opacity: 0, x: -20 }}
+                initial={{ opacity: 0, x: shouldReduceMotion ? 0 : -20 }}
                 animate={{ opacity: [0, 1, 1, 0], x: 0 }}
-                transition={{ duration: 1.5, delay: (i * 1.2) + 0.3 }}
+                transition={shouldReduceMotion ? { duration: 0 } : { duration: 1.5, delay: (i * 1.2) + 0.3 }}
                 style={{ 
                   textAlign: 'center', 
                   color: evt.effectiveness > 1 ? '#FBBF24' : '#A0A0A0', 
@@ -110,6 +113,8 @@ export default function Battle({ params }) {
   const [waiting, setWaiting] = useState(false);
   const [recentEvents, setRecentEvents] = useState([]);
 
+  const [socketError, setSocketError] = useState(false);
+
   useEffect(() => {
     fetch('/api/auth/me').then(r => r.json()).then(data => {
       const socket = getSocket();
@@ -124,6 +129,9 @@ export default function Battle({ params }) {
   useEffect(() => {
     const socket = getSocket();
     
+    socket.on('connect_error', () => setSocketError(true));
+    socket.on('disconnect', () => setSocketError(true));
+
     socket.on('initial-state', data => {
       setGameState(data.gameState);
     });
@@ -141,6 +149,8 @@ export default function Battle({ params }) {
     return () => {
       socket.off('turn-result');
       socket.off('initial-state');
+      socket.off('connect_error');
+      socket.off('disconnect');
     };
   }, []);
 
@@ -172,6 +182,16 @@ export default function Battle({ params }) {
       handleAction({ type: 'pass' });
     }
   }, [isOpponentForceSwitch, waiting]);
+
+  if (socketError) {
+    return (
+      <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', height: '100vh', gap: '20px' }}>
+        <h2 style={{ color: 'var(--hp-low)' }}>Connection Lost</h2>
+        <p style={{ color: 'var(--text-secondary)' }}>You have been disconnected from the battle server.</p>
+        <button onClick={() => window.location.href = '/lobby'} style={{ padding: '10px 20px', background: 'var(--surface-2)', border: 'none', color: '#fff', borderRadius: '8px', cursor: 'pointer' }}>Return to Lobby</button>
+      </div>
+    );
+  }
 
   if (!gameState) return <div style={{ padding: 20 }}>Loading battle...</div>;
 
@@ -277,18 +297,21 @@ export default function Battle({ params }) {
 
       {/* Force Switch Drawer */}
       <AnimatePresence>
-        {isForceSwitch && (
+        {isForceSwitch && (() => {
+          const shouldReduceMotion = useReducedMotion();
+          return (
           <motion.div 
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
+            transition={shouldReduceMotion ? { duration: 0 } : undefined}
             style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, background: 'rgba(0,0,0,0.6)', zIndex: 100 }}
           >
             <motion.div
-              initial={{ y: '100%' }}
+              initial={{ y: shouldReduceMotion ? 0 : '100%' }}
               animate={{ y: 0 }}
-              exit={{ y: '100%' }}
-              transition={{ type: 'spring', damping: 25, stiffness: 200 }}
+              exit={{ y: shouldReduceMotion ? 0 : '100%' }}
+              transition={shouldReduceMotion ? { duration: 0 } : { type: 'spring', damping: 25, stiffness: 200 }}
               style={{ position: 'absolute', bottom: 0, left: 0, right: 0, background: 'var(--surface-1)', padding: 20, borderTopLeftRadius: 24, borderTopRightRadius: 24, boxShadow: '0 -4px 20px rgba(0,0,0,0.5)' }}
             >
               <h2 style={{ textAlign: 'center', marginBottom: 20 }}>Choose next Pokémon</h2>
@@ -320,7 +343,8 @@ export default function Battle({ params }) {
               </div>
             </motion.div>
           </motion.div>
-        )}
+          );
+        })()}
       </AnimatePresence>
     </div>
   );
