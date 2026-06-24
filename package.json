@@ -25,6 +25,7 @@
     "cookie-parser": "^1.4.7",
     "dotenv": "^17.4.2",
     "express": "^5.2.1",
+    "framer-motion": "^12.41.0",
     "jsonwebtoken": "^9.0.3",
     "mongodb-memory-server": "^11.2.0",
     "mongoose": "^9.7.2",
