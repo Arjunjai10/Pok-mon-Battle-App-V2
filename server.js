@@ -39,6 +39,10 @@ app.prepare().then(async () => {
   server.use(express.json());
   server.use(cookieParser());
 
+  server.get('/api/health', (req, res) => {
+    res.status(200).json({ status: 'ok', phase: 7 });
+  });
+
   server.use('/api/auth', authRoutes);
   server.use('/api/teams', teamRoutes);
   server.use('/api/friends', friendRoutes);
