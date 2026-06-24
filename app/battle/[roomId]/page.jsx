@@ -1,8 +1,7 @@
 'use client';
-import { useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { getSocket } from '../../../lib/socket';
 import { motion, AnimatePresence } from 'framer-motion';
-
 const HpBar = ({ hp, maxHp }) => {
   const percent = Math.max(0, Math.min(100, (hp / maxHp) * 100));
   let colorVar = '--hp-high';
@@ -104,7 +103,8 @@ const PokemonSprite = ({ isP1, active, events }) => {
 };
 
 export default function Battle({ params }) {
-  const roomId = params.roomId;
+  const unwrappedParams = React.use(params);
+  const roomId = unwrappedParams.roomId;
   const [gameState, setGameState] = useState(null);
   const [log, setLog] = useState([]);
   const [waiting, setWaiting] = useState(false);

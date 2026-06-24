@@ -91,6 +91,16 @@ function setupSocket(io) {
       }
     });
 
+    socket.on('check-online-friends', (data) => {
+      try {
+        const { friendIds } = data; // Array of user IDs
+        const onlineIds = friendIds.filter(id => activeUsers.has(id));
+        socket.emit('online-friends', { onlineIds });
+      } catch (err) {
+        console.error(err);
+      }
+    });
+
     socket.on('reconnect-room', (data) => {
       try {
         if (!currentUserId) throw new Error('Must be authenticated');
